@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>测试跨域请求的问题</title>
+</head>
+<body>
+
+    <button onclick="test_login()">测试用户登录</button>
+    <div id="ret">
+
+    </div>
+
+    <script>
+        function $(element_id) {
+            return document.getElementById(element_id);
+        }
+
+        function test_login() {
+            alert('正在测试Login')
+
+            fetch('http://10.36.172.137:5000/user/login/', {
+                method: 'POST'
+            }).then(resp=>resp.json()).then(data=>{
+                console.log(data);
+                $('ret').innerHTML = "<h5>"+data.msg+"</h5><h6>"+data.token+"</h6>"
+            });
+        }
+    </script>
+</body>
+</html>
