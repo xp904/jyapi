@@ -10,6 +10,8 @@ import db
 from common.crypo import encode4md5
 from common.token_ import new_token
 
+from common import sms_
+
 user_blue = Blueprint('user_blue', __name__)
 
 
@@ -57,3 +59,50 @@ def login():
                 'status': 3,
                 'msg': '登录失败， 用户名或口令错误!',
             })
+
+
+@user_blue.route('/send_code/', methods=('GET',))
+def send_code():
+    try:
+        # 获取手机号
+        phone = request.args.get('phone')
+        sms_.send_code(phone)
+    except:
+        return jsonify({
+            'status': 1,
+            'msg': '发送失败，请重试'
+        })
+
+    return jsonify({
+        'status': 0,
+        'msg': '发送成功'
+    })
+
+
+@user_blue.route('/regist/', methods=('POST', ))
+def regist():
+    # {"phone": "", "code": ""}
+    try:
+        data = request.get_json()
+        phone = data.get('phone')
+        code = data.get('code')
+
+        if sms_.validate_code(phone, code):
+            user = AppUser()
+            user.name = phone
+            user.auth_string = encode4md5(phone[-6:])
+
+            db.session.add(user)
+            db.session.commit() # 提交事务
+
+    except Exception as e:
+        print(e)
+        return jsonify({
+            'status': 1,
+            'msg': '注册失败'
+        })
+
+    return jsonify({
+        'status': 0,
+        'msg': '注册成功'
+    })
