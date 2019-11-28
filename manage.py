@@ -7,11 +7,15 @@ from mainapp.views import user_api
 from mainapp.views import category_api
 
 
-if __name__ == '__main__':
-
+def make_app():
     app.register_blueprint(user_api.user_blue, url_prefix='/user')
     app.register_blueprint(category_api.blue, url_prefix='/category')
 
     CORS(app)
+    return app
 
-    app.run('0.0.0.0', 8080)
+
+application = make_app()
+
+if __name__ == '__main__':
+    application.run('0.0.0.0', 8080)

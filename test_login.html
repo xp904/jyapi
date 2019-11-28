@@ -20,9 +20,17 @@
 
         function test_login() {
             alert('正在测试Login')
-
-            fetch('http://10.36.172.137:5000/user/login/', {
-                method: 'POST'
+            // 39.98.112.201:8888
+            fetch('http://39.98.112.201:8888/user/login', {
+                method: 'POST',
+                headers: {
+                    "Accept": "application/json,text/plain,*/*",
+                    "Content-Type": "application/json"
+                },
+                body:JSON.stringify({
+                    "name": "李佳豪",
+                    "pwd": "123456"
+                })
             }).then(resp=>resp.json()).then(data=>{
                 console.log(data);
                 $('ret').innerHTML = "<h5>"+data.msg+"</h5><h6>"+data.token+"</h6>"
